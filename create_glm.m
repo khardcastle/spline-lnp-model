@@ -1,4 +1,4 @@
-function [bestModels,tuning_curves,final_pval, fig1] = create_glm(x,y,head_direction,speed,spiketrain,boxSize)
+function [bestModels,tuning_curves,final_pval, fig1] = create_glm(x,y,head_direction,speed,spiketrain,boxSize,dt)
 
 
 %% do some initial processing 
@@ -7,12 +7,16 @@ function [bestModels,tuning_curves,final_pval, fig1] = create_glm(x,y,head_direc
 var_name = {'position','hd','speed'};
 numVar = numel(var_name);
 
+
+% make sure x and y start at 0
+x = x - min(x);
+y = y - min(y);
+
 isnan_x = find(isnan(x));
 isnan_y = find(isnan(y));
 isnan_h = find(isnan(head_direction));
 isnan_s = find(isnan(speed));
-isnan_all = unique([isnan_x; isnan_y; isnan_h; isnan_s;]);
-
+isnan_all = [isnan_x; isnan_y; isnan_h; isnan_s];
 
 spiketrain(isnan_all) = [];
 x(isnan_all) = [];
