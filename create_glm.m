@@ -27,12 +27,12 @@ speed(isnan_all) = [];
 %% compute the input matrices for head direction and gaze
 
 fig1 = figure(1);
-
+s = 0.5; % spline parameter
 %%%%%%%%% POSITION %%%%%%%%%
     fprintf('Making position matrix\n');
     
     % plot position coverage and position tuning curve
-    s = 0.7;
+    
     bin_x = round(max(x)*(25/100));
     bin_y = round(max(y)*(25/100));
     [pos_tuning_curve,pos_occupancy] = compute_2d_tuning_curve(x,y,spiketrain,bin_x,0,max(x),bin_y,0,max(y));
@@ -53,7 +53,7 @@ fig1 = figure(1);
     ylabel('spikes/s')
     axis tight
     
-    bin_ratio = 15/100;
+    bin_ratio = 20/100;
     bin_x = round(max(x)*bin_ratio);
     bin_y = round(max(y)*bin_ratio);
     x_vec = linspace(0,max(x),bin_x); x_vec(1) = -0.01;
@@ -81,9 +81,8 @@ fig1 = figure(1);
     axis tight
     
     fprintf('Making head direction matrix\n');
-    bin_h = 10;
+    bin_h = 12;
     hd_vec = linspace(0,2*pi,bin_h+1); hd_vec = hd_vec(1:end-1);
-    s = 0.7;
     [hdgrid] = spline_1d_circ(head_direction,hd_vec,s);
     A{2} = hdgrid;
     ctl_pts_all{2} = hd_vec;
@@ -111,9 +110,8 @@ fig1 = figure(1);
     
     
     fprintf('Making speed matrix\n');
-    spdVec = [0:5:max_speed]; spdVec(1) = -0.1;
+    spdVec = [0:5:max_speed]; spdVec(end) = max_speed; spdVec(1) = -0.1;
     speed(speed > max_speed) = max_speed; %send everything over max to max
-    s = 0.7;
     [speedgrid,~] = spline_1d(speed,spdVec,s);
     A{3} = speedgrid;
     ctl_pts_all{3} = spdVec;
@@ -124,7 +122,7 @@ fig1 = figure(1);
 %%%%%%% COMPUTE TEST AND TRAIN INDICES %%%%%
 numFolds = 10;
 T = numel(spiketrain); 
-numPts = 10*round(1/dt); % 10 seconds
+numPts = 3*round(1/dt); % 3 seconds. i've tried #'s from 1-10 seconds.. not sure what is best
 [train_ind,test_ind] = compute_test_train_ind(numFolds,numPts,T);
 
 %%%%%%%% FORWARD SEARCH PROCEDURE %%%%%%%%%
@@ -142,9 +140,12 @@ hold on
 plot([1 numVar],[0 0],'--b','linewidth',1);
 hold off
 box off
-set(gca,'xticklabel',{'position','hd','speed','head velocity'})
+set(gca,'xtick',[1 2 3])
+set(gca,'xticklabel',{'position','hd','speed'})
 ylabel('bits/spike')
-axis([0.5 7.5 -inf inf])
-legend('first model fit','final model fit','baseline')
+axis([0.5 3.5 -inf inf])
+legend('first model fit','baseline')
+
+keyboard
 
 return

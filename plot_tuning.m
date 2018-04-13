@@ -1,4 +1,4 @@
-function [tuning_curves, fig1] = plot_tuning(A,variables,parameters,ctl_pts_all,s,plotfig,dt,fig1)
+function [tuning_curves, fig1] = plot_tuning(A,variables,parameters,ctl_pts_all,s,plotfig,dt,fig1,var_name)
 
 %% Description
 % Given the variables, A, and the parameters,
@@ -73,12 +73,12 @@ if plotfig
     if ismember(3,variables)
         fig1 = subplot(4,numVar,numVar*2+3);
         scale_factor_ind = setdiff(variables,3); scale_factor = scale(scale_factor_ind);
-        plot(speed_x,exp(speed_y)*prod(scale_factor)/dt,'k','linewidth',2);
+        plot(speed_x,exp(speed_y)*exp(b0)*prod(scale_factor)/dt,'k','linewidth',2);
         box off
         xlabel('speed')
         ylabel('spikes/s')
         axis tight
-        tuning_curves{3} = prod(scale_factor);
+        tuning_curves{3} = exp(speed_y)*exp(b0)*prod(scale_factor);
         title('LNP speed tuning')
     end
     

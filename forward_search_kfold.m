@@ -85,7 +85,6 @@ while pval < 0.05 && numel(variables) < num_var
     
     baseModel = topModel;
     
-    
 end
 
 % check that the final model is sig better than zero
