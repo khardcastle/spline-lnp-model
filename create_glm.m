@@ -1,5 +1,11 @@
 function [bestModels,tuning_curves,final_pval, fig1] = create_glm(x,y,head_direction,speed,spiketrain,boxSize,dt)
 
+%% ASSUMPTIONS:
+% x and y are in real units (cm) that go from 0 to the boxsize (everything
+% is re-scaled
+
+% head direction is in units of radians (go from 0 to 2*pi)
+
 
 %% do some initial processing 
 % remove NaNs from head direction, eye in head direction
@@ -53,7 +59,7 @@ s = 0.5; % spline parameter
     ylabel('spikes/s')
     axis tight
     
-    bin_ratio = 20/100;
+    bin_ratio = 10/100;
     bin_x = round(max(x)*bin_ratio);
     bin_y = round(max(y)*bin_ratio);
     x_vec = linspace(0,max(x),bin_x); x_vec(1) = -0.01;
@@ -145,7 +151,5 @@ set(gca,'xticklabel',{'position','hd','speed'})
 ylabel('bits/spike')
 axis([0.5 3.5 -inf inf])
 legend('first model fit','baseline')
-
-keyboard
 
 return
